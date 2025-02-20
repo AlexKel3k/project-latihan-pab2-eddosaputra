@@ -1,0 +1,29 @@
+[
+    {
+    "nama": "Eddo Saputra",
+    "umur": 21,
+    "alamat": {
+      "jalan": "Jl. Karya Baru No. 10",
+      "kota": "Palembang",
+      "provinsi": "Sumatera Selatan"
+    },
+    "hobi": [
+      "Membaca",
+      "Bersepeda"
+    ]
+  },
+  {
+    "nama": "John Doe",
+    "umur": 30,
+    "alamat": {
+      "jalan": "Jl. Merdeka No. 10",
+      "kota": "Jakarta",
+      "provinsi": "DKI Jakarta"
+    },
+    "hobi": [
+      "Menulis",
+      "Makan"
+    ]
+  }
+  
+  ]
