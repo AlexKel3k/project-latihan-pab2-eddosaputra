@@ -27,7 +27,13 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+dependency_overrides:
+  geolocator_android: ^4.1.7
+
 dependencies:
+  google_generative_ai: ^0.4.7
+  shimmer: ^3.0.0
+
   flutter:
     sdk: flutter
 
