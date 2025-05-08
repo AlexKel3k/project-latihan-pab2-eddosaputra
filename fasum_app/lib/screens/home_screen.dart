@@ -5,6 +5,7 @@ import 'package:fasum_app/screens/add_post_screen.dart';
 import 'package:fasum_app/screens/detail_screen.dart';
 import 'package:fasum_app/screens/sign_in_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -17,11 +18,26 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String? selectedCategory;
-  final List<String> categories = [
+  //ambil dari add_post_screen
+  List<String> categories = [
     'Jalan Rusak',
+    'Marka Pudar',
     'Lampu Mati',
+    'Trotoar Rusak',
+    'Rambu Rusak',
+    'Jembatan Rusak',
     'Sampah Menumpuk',
-  ]; // Contoh kategori
+    'Saluran Tersumbat',
+    'Sungai Tercemar',
+    'Sampah Sungai',
+    'Pohon Tumbang',
+    'Taman Rusak',
+    'Fasilitas Rusak',
+    'Pipa Bocor',
+    'Vandalisme',
+    'Banjir',
+    'Lainnya',
+  ];
 
   String formatTime(DateTime dateTime) {
     final now = DateTime.now();
@@ -41,10 +57,10 @@ class _HomeScreenState extends State<HomeScreen> {
     await FirebaseAuth.instance.signOut();
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const SignInScreen()),
-    );
+        MaterialPageRoute(builder: (context) => const SignInScreen()));
   }
 
+  //ambil dari https://pastebin.com/8BXgdv3M
   void _showCategoryFilter() async {
     final result = await showModalBottomSheet<String?>(
       context: context,
@@ -62,7 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ListTile(
                   leading: const Icon(Icons.clear),
                   title: const Text('Semua Kategori'),
-                  onTap: () => Navigator.pop(context, null),
+                  onTap: () => Navigator.pop(
+                    context,
+                    null,
+                  ), // Null untuk memilih semua kategori
                 ),
                 const Divider(),
                 ...categories.map(
@@ -83,10 +102,18 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
-
-    setState(() {
-      selectedCategory = result; // null berarti semua kategori
-    });
+    if (result != null) {
+      setState(() {
+        selectedCategory =
+            result; // Set kategori yang dipilih atau null untuk Semua Kategori
+      });
+    } else {
+      // Jika result adalah null, berarti memilih Semua Kategori
+      setState(() {
+        selectedCategory =
+            null; // Reset ke null untuk menampilkan semua kategori
+      });
+    }
   }
 
   @override
@@ -99,14 +126,13 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: _showCategoryFilter,
             icon: const Icon(Icons.filter_list),
-            tooltip: "Filter Kategori",
           ),
           IconButton(
             onPressed: () {
               signOut(context);
             },
             icon: const Icon(Icons.logout),
-          ),
+          )
         ],
       ),
       body: RefreshIndicator(
@@ -119,25 +145,24 @@ class _HomeScreenState extends State<HomeScreen> {
               .orderBy('createdAt', descending: true)
               .snapshots(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData)
+            if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
+            }
 
             final posts = snapshot.data!.docs.where((doc) {
               final data = doc.data();
               final category = data['category'] ?? 'Lainnya';
               return selectedCategory == null || selectedCategory == category;
-              // final postCategory = data['category'] as String?;
-
-              // if (selectedCategory == null) return true; // Semua kategori
-              // return postCategory == selectedCategory;
             }).toList();
 
             if (posts.isEmpty) {
               return const Center(
-                child: Text('Tidak ada laporan untuk kategori ini!'),
+                child: Text("Tidak ada laporan untuk kategori ini!"),
               );
             }
 
+            //Script lengkap bagian ListView.builder
+            //https://pastebin.com/kSXM5mTX
             return ListView.builder(
               itemCount: posts.length,
               itemBuilder: (context, index) {
@@ -146,28 +171,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 final description = data['description'];
                 final createdAtStr = data['createdAt'];
                 final fullName = data['fullName'] ?? 'Anonim';
-
-                final createdAt = DateFormat(
-                  'dd-MM-yyyy HH:mm:ss',
-                ).parse(createdAtStr);
-                final heroTag =
+                final latitude = data['latitude']?? 0.0;
+                final longitude = data['longitude']?? 0.0;
+                final category = data['category'] ?? 'Lainnya';
+                //parse ke DateTime
+                final createdAt = DateTime.parse(createdAtStr);
+                String heroTag =
                     'fasum-image-${createdAt.millisecondsSinceEpoch}';
-
                 return InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => DetailScreen(
-                          imageBase64: imageBase64,
-                          description: description,
-                          createdAt: createdAt,
-                          fullName: fullName,
-                          latitude: data['latitude'] ?? 0.0,
-                          longitude: data['longitude'] ?? 0.0,
-                          category: data['category'] ?? '',
-                          heroTag: heroTag,
-                        ),
+                            imageBase64: imageBase64,
+                            description: description,
+                            createdAt: createdAt,
+                            fullName: fullName,
+                            latitude: latitude,
+                            longitude: longitude,
+                            category: category,
+                            heroTag: heroTag),
                       ),
                     );
                   },
@@ -182,39 +206,41 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (imageBase64 != null)
                           ClipRRect(
                             borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(10),
-                            ),
-                            child: Image.memory(
-                              base64Decode(imageBase64),
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: 200,
-                            ),
+                                top: Radius.circular(10)),
+                            child: Image.memory(base64Decode(imageBase64),
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: 200),
                           ),
                         Padding(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                formatTime(createdAt),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                fullName,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    formatTime(createdAt),
+                                    style: const TextStyle(
+                                        fontSize: 12, color: Colors.grey),
+                                  ),
+                                  Text(
+                                    fullName,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                ],
                               ),
                               const SizedBox(height: 6),
                               Text(
                                 description ?? '',
                                 style: const TextStyle(fontSize: 16),
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -230,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const AddPostScreen()),
+            MaterialPageRoute(builder: (context) => AddPostScreen()),
           );
         },
         child: const Icon(Icons.add),

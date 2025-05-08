@@ -8,13 +8,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:shimmer/shimmer.dart';
- 
+
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({Key? key}) : super(key: key);
   @override
   State<AddPostScreen> createState() => _AddPostScreenState();
 }
- 
+
 class _AddPostScreenState extends State<AddPostScreen> {
   File? _image;
   String? _base64Image;
@@ -70,13 +70,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
       },
     );
   }
- 
+
   @override
   void dispose() {
     _descriptionController.dispose();
     super.dispose();
   }
- 
+
   Future<void> _pickImage(ImageSource source) async {
     try {
       final pickedFile = await _picker.pickImage(source: source);
@@ -98,7 +98,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       }
     }
   }
- 
+
   Future<void> _compressAndEncodeImage() async {
     if (_image == null) return;
     try {
@@ -118,7 +118,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       }
     }
   }
- 
+
   Future<void> _generateDescriptionWithAI() async {
     if (_image == null) return;
     setState(() => _isGenerating = true);
@@ -126,7 +126,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
       //RequestOptions ro = const RequestOptions(apiVersion: 'v1');
       final model = GenerativeModel(
         model: 'gemini-1.5-flash',
-        apiKey: '', //gunakan api key gemini anda
+        apiKey: 'AIzaSyBuTdPAMaOaqcTJvSKguWwOMPb9nAqHIVo',
+        //gunakan api key gemini anda
         //requestOptions: ro,
       );
       final imageBytes = await _image!.readAsBytes();
@@ -177,7 +178,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       if (mounted) setState(() => _isGenerating = false);
     }
   }
- 
+
   Future<void> _getLocation() async {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -218,7 +219,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       });
     }
   }
- 
+
   Future<void> _submitPost() async {
     if (_base64Image == null || _descriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -269,7 +270,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       }
     }
   }
- 
+
   void _showImageSourceDialog() {
     showModalBottomSheet(
       context: context,
@@ -304,7 +305,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       },
     );
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
