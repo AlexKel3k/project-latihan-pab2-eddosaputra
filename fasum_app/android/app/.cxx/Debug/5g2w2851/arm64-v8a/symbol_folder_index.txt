@@ -1,0 +1,1 @@
+C:\xampp\htdocs\project-latihan-pab2-eddosaputra\fasum_app\build\app\intermediates\cxx\Debug\5g2w2851\obj\arm64-v8a

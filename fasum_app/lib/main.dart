@@ -1,10 +1,11 @@
 import 'dart:convert';
-import 'package:fasum_app/firebase_options.dart';
+
 import 'package:fasum_app/screens/splash_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'firebase_options.dart';
 import 'package:http/http.dart' as http;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -17,7 +18,6 @@ Future<void> requestNotificationPermission() async {
     badge: true,
     sound: true,
   );
-
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     print('Izin notifikasi diberikan');
   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
@@ -36,7 +36,6 @@ Future<void> showBasicNotification(String? title, String? body) async {
     priority: Priority.high,
     showWhen: true,
   );
-
   final platform = NotificationDetails(android: android);
   await flutterLocalNotificationsPlugin.show(0, title, body, platform);
 }
@@ -60,20 +59,25 @@ Future<void> showNotificationFromData(Map<String, dynamic> data) async {
       ? BigPictureStyleInformation(
           largeIconBitmap,
           contentTitle: title,
-          summaryText: '$body\nDari: $sender - $time',
+          summaryText: '$body\n\nDari: $sender - $time',
           largeIcon: largeIconBitmap,
           hideExpandedLargeIcon: true,
         )
       : BigTextStyleInformation(
-          '$body\nDari: $sender\nWaktu: $time',
+          '$body\n\nDari: $sender\nWaktu: $time',
           contentTitle: title,
         );
+
+  final simpleStyleInfo = BigTextStyleInformation(
+    '$body\n\nDari: $sender\nWaktu: $time',
+    contentTitle: title,
+  );
 
   final androidDetails = AndroidNotificationDetails(
     'detailed_channel',
     'Notifikasi Detail',
     channelDescription: 'Notifikasi dengan detail tambahan',
-    styleInformation: styleInfo,
+    styleInformation: simpleStyleInfo,
     largeIcon: largeIconBitmap,
     importance: Importance.max,
     priority: Priority.max,
@@ -107,7 +111,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   await requestNotificationPermission();
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -142,6 +149,7 @@ class _MyAppState extends State<MyApp> {
 
   void setupFirebaseMessaging() async {
     String? token = await FirebaseMessaging.instance.getToken();
+    //(vapidKey: 'AIzaSyCMwt3bydj0dYyAaYEFc0vAqf9s5vMmX1c');
     print("FCM Token: $token");
 
     FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -163,13 +171,19 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Fasum',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: SplashScreen(),
+      // home: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (context, snapshot){
+      //   if(snapshot.hasData){
+      //     return const HomeScreen();
+      //   } else {
+      //     return const SignInScreen();
+      //   }
+      // }),
     );
   }
 }

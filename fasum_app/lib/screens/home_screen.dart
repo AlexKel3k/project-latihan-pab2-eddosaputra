@@ -416,8 +416,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 final description = data['description'];
                 final createdAtStr = data['createdAt'];
                 final fullName = data['fullName'] ?? 'Anonim';
-                final latitude = data['latitude'];
-                final longitude = data['longitude'];
+                final latitude = data['latitude'] ?? 0.0;
+                final longitude = data['longitude'] ?? 0.0;
                 final category = data['category'] ?? 'Lainnya';
                 final userId = data['userId'] ?? "";
                 //parse ke DateTime

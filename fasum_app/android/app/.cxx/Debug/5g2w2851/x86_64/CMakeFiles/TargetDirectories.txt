@@ -1,0 +1,2 @@
+C:/xampp/htdocs/project-latihan-pab2-eddosaputra/fasum_app/android/app/.cxx/Debug/5g2w2851/x86_64/CMakeFiles/edit_cache.dir
+C:/xampp/htdocs/project-latihan-pab2-eddosaputra/fasum_app/android/app/.cxx/Debug/5g2w2851/x86_64/CMakeFiles/rebuild_cache.dir

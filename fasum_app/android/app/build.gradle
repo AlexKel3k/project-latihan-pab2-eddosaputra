@@ -14,7 +14,7 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
+        coreLibraryDesugaringEnabled true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -28,10 +28,11 @@ android {
         applicationId = "com.example.fasum_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 23
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 23  // <-- Updated this line to ensure compatibility
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        
     }
 
     buildTypes {
@@ -42,10 +43,12 @@ android {
         }
     }
 }
-depedencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+
 }
+
 
 flutter {
     source = "../.."
-}
+} 
