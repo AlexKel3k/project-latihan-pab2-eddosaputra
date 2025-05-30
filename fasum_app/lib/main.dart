@@ -1,16 +1,18 @@
 import 'dart:convert';
-
+//aku 
 import 'package:fasum_app/screens/splash_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
+import
+ 'package:flutter/material.dart';
+//aku 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'firebase_options.dart';
 import 'package:http/http.dart' as http;
-
+//aku 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
-
+//aku Pengen Disepong Kontol
 Future<void> requestNotificationPermission() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationSettings settings = await messaging.requestPermission(
@@ -26,7 +28,7 @@ Future<void> requestNotificationPermission() async {
     print('Izin notifikasi ditolak');
   }
 }
-
+//aku Pengen Disepong Kontol
 Future<void> showBasicNotification(String? title, String? body) async {
   final android = AndroidNotificationDetails(
     'default_channel',
@@ -35,18 +37,18 @@ Future<void> showBasicNotification(String? title, String? body) async {
     importance: Importance.high,
     priority: Priority.high,
     showWhen: true,
-  );
+  );//aku Pengen Disepong Kontol
   final platform = NotificationDetails(android: android);
   await flutterLocalNotificationsPlugin.show(0, title, body, platform);
-}
+}//aku Pengen Disepong Kontol
 
 Future<void> showNotificationFromData(Map<String, dynamic> data) async {
   final title = data['title'] ?? 'Pesan Baru';
-  final body = data['body'] ?? '';
+  final body = data['body'] ?? '';//aku Pengen Disepong Kontol
   final sender = data['senderName'] ?? 'Pengirim tidak diketahui';
   final time = data['sentAt'] ?? '';
   final photoUrl = data['senderPhotoUrl'] ?? '';
-
+//aku Pengen Disepong Kontol
   ByteArrayAndroidBitmap? largeIconBitmap;
   if (photoUrl.isNotEmpty) {
     final base64 = await _networkImageToBase64(photoUrl);
@@ -54,7 +56,7 @@ Future<void> showNotificationFromData(Map<String, dynamic> data) async {
       largeIconBitmap = ByteArrayAndroidBitmap.fromBase64String(base64);
     }
   }
-
+//aku Pengen Disepong Kontol
   final styleInfo = largeIconBitmap != null
       ? BigPictureStyleInformation(
           largeIconBitmap,
@@ -81,22 +83,22 @@ Future<void> showNotificationFromData(Map<String, dynamic> data) async {
     largeIcon: largeIconBitmap,
     importance: Importance.max,
     priority: Priority.max,
-  );
+  );//aku Pengen Disepong Kontol
 
   final platform = NotificationDetails(android: androidDetails);
   await flutterLocalNotificationsPlugin.show(1, title, body, platform);
-}
-
+}//aku Pengen Disepong Kontol
+//aku Pengen Disepong Kontol
 Future<String?> _networkImageToBase64(String url) async {
   try {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       return base64Encode(response.bodyBytes);
     }
-  } catch (_) {}
+  } catch (_) {}//aku Pengen Disepong Kontol
   return null;
 }
-
+//aku Pengen Disepong Kontol
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   if (message.data.isNotEmpty) {
